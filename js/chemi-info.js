@@ -7,17 +7,56 @@ fs.createReadStream("../src/PubChemElements_all.csv")
     .on("data", (data) => results.push(data))
     .on("end", () => {
 
-        console.log(`Loaded ${results.length} Elements!`)
+        const elementByNumber = new Map();
+        results.forEach (element => elementByNumber.set(element.AtomicNumber, element));
 
-        const userInput = readName();
-        const elementIndex = search(userInput, results);
-        displayElement(elementIndex, results);
+        const elementBySymbol = new Map();
+        const elementByName = new Map();
+
+        for (const element of elementByNumber.values())
+        {
+            elementBySymbol.set(element.Symbol.toLowerCase(), element);
+            elementByName.set(element.Name.toLowerCase(), element);
+        }
+        console.log(`Loaded ${results.length} Elements!`)
+        let continuePrompt = true;
+
+        while (continuePrompt)
+        {
+            const userInput = readName();
+            const element = lookUp(userInput, elementByNumber, elementBySymbol, elementByName);
+            displayElement(element);
+
+            const userContinue = continueLookUp();
+            if (userContinue === 'no' || userContinue === 'n')
+            {
+                continuePrompt = false;
+            }
+        }
+
     });
 
 function isNumber(value) 
 {
     return !isNaN(Number(value));
 }
+
+function continueLookUp()
+{
+    const prompt = require('prompt-sync') ({sigint: true});
+
+    let userContinue = prompt('Do you want to look up another element? ');
+    let validInput = userContinue.trim().toLowerCase();
+
+    while (validInput.length === 0 || isNumber(userContinue) || (validInput !== 'yes' && validInput !== 'no' && validInput !== 'y' && validInput !== 'n'))
+    {
+        userContinue = prompt('Please enter (Y)es or (N)o! ');
+        validInput = userContinue.trim().toLowerCase();
+    }
+
+    return validInput;
+}
+
 function readName() 
 {
     const prompt = require('prompt-sync') ({sigint: true});
@@ -49,61 +88,46 @@ function readName()
 
 //search function, will return the index of the intended element, if no result print such element
 
-function search(userInput, elemArray)
+function lookUp(userInput, elementByNumber, elementBySymbol, elementByName)
 {
-    //if input is number, look through atomic number, else symbol (only 2 characters long) or name
-    let elementIndex = -1;
-
-    if (isNumber(userInput))
+    //Normalise input
+    const normalisedInput = userInput.toString().trim().toLowerCase();
+    let elementResult;
+    //If input is a number, get number, if input length is between 1 and 2 get symbol else get name
+    if (isNumber(normalisedInput))
     {
-        for (let i = 0; i < elemArray.length; i++)
-        {
-            if (Number(elemArray[i].AtomicNumber) === userInput)
-            {
-                elementIndex = i;
-                break;
-            }
-        }
+        elementResult = elementByNumber.get(normalisedInput);
+    }
+    else if (normalisedInput.length <= 2)
+    {
+        elementResult = elementBySymbol.get(normalisedInput);
     }
     else
     {
-        for (let i =  0; i < elemArray.length; i++)
-        {
-            if (elemArray[i].Name === userInput)
-            {
-                elementIndex = i;
-                break;
-            }
-            else if (elemArray[i].Symbol === userInput)
-            {
-                elementIndex = i;
-                break;
-            }
-        }
+        elementResult = elementByName.get(normalisedInput);
     }
 
-    return elementIndex;
+    return elementResult;
 }
 
-function displayElement(elementIndex, elemArray)
+function displayElement(elem)
 {
-    if (elementIndex === -1)
+    if (!elem)
     {
         console.log("No element found!");
     }
     else
     {
-        const element = elemArray[elementIndex];
         console.log("Element Found!");
-        console.log(`Element Atomic Number: ${element.AtomicNumber}`);
-        console.log(`Element Symbol: ${element.Symbol}`);
-        console.log(`Element Name: ${element.Name}`);
-        console.log(`Element Atomic Mass: ${element.AtomicMass} u`);
-        console.log(`Element Standard State: ${element.StandardState}`);
-        console.log(`Element Boiling Point: ${element.BoilingPoint ? element.BoilingPoint + " K" : "N/A"}`);
-        console.log(`Element Melting Point: ${element.MeltingPoint ? element.MeltingPoint + " K": "N/A"}`);
-        console.log(`Element Density: ${element.Density} g/cm^3`);
-        console.log(`Element Group: ${element.GroupBlock}`);
-        console.log(`Element Discovery Year: ${element.YearDiscovered}`);
+        console.log(`Element Atomic Number: ${elem.AtomicNumber}`);
+        console.log(`Element Symbol: ${elem.Symbol}`);
+        console.log(`Element Name: ${elem.Name}`);
+        console.log(`Element Atomic Mass: ${elem.AtomicMass} u`);
+        console.log(`Element Standard State: ${elem.StandardState}`);
+        console.log(`Element Boiling Point: ${elem.BoilingPoint ? elem.BoilingPoint + " K" : "N/A"}`);
+        console.log(`Element Melting Point: ${elem.MeltingPoint ? elem.MeltingPoint + " K": "N/A"}`);
+        console.log(`Element Density: ${elem.Density ? elem.Density + " g/cm^3" : "N/A"}`);
+        console.log(`Element Group: ${elem.GroupBlock}`);
+        console.log(`Element Discovery Year: ${elem.YearDiscovered}`);
     }
 }
