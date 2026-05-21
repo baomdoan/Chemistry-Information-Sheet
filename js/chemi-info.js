@@ -48,7 +48,7 @@ function continueLookUp()
     let userContinue = prompt('Do you want to look up another element? ');
     let validInput = userContinue.trim().toLowerCase();
 
-    while (validInput.length === 0 || isNumber(userContinue) || (validInput !== 'yes' && validInput !== 'no' && validInput !== 'y' && validInput !== 'n'))
+    while (validInput !== 'yes' && validInput !== 'no' && validInput !== 'y' && validInput !== 'n')
     {
         userContinue = prompt('Please enter (Y)es or (N)o! ');
         validInput = userContinue.trim().toLowerCase();
@@ -79,21 +79,21 @@ function readName()
     }
     else
     {
-        elementInput = elementInput.charAt(0).toUpperCase() + elementInput.slice(1).toLowerCase();
+        elementInput = elementInput.toLowerCase();
     }
 
     return elementInput;
 }
 
 
-//search function, will return the index of the intended element, if no result print such element
+//search function will return the object of the intended element if no result prints such element
 
 function lookUp(userInput, elementByNumber, elementBySymbol, elementByName)
 {
     //Normalise input
-    const normalisedInput = userInput.toString().trim().toLowerCase();
+    const normalisedInput = userInput.toString().trim();
     let elementResult;
-    //If input is a number, get number, if input length is between 1 and 2 get symbol else get name
+    //If input is a number, get number, if input length is between 1 and 2, get symbol else get name
     if (isNumber(normalisedInput))
     {
         elementResult = elementByNumber.get(normalisedInput);

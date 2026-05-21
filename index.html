@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Element Information Sheet</title>
+        <script defer src="./js/chem-html-form.js"></script>
+    </head>
+
+    <body>
+        <div class="main">
+            <h1>Element Information Search</h1>
+        </div>
+
+        <section class="element-form">
+            <form id="element-form" method="post" action="https://httpbin.org/post">
+                <div class="element-input">
+                    <label class="elem-choice">Enter a symbol/name/atomic number of an element:</label><br>
+                    <input id="element-input" name="element-input" type="text" required>
+                    <span  id = "element-input-error" class="error-message"></span>
+                </div>
+
+                <div class="element-display">
+
+                </div>
+
+                <input type="submit" value="Submit" />
+                <input type="reset" value="Reset" />
+            </form>
+        </section>
+    </body>
+</html>
