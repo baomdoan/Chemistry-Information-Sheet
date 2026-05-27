@@ -1,3 +1,4 @@
+// This is primarily a csv parser to test on console
 const fs = require("fs");
 const csv = require("csv-parser");
 const results = [];
