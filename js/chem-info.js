@@ -25,9 +25,16 @@ fs.createReadStream("../src/PubChemElements_all.csv")
         while (continuePrompt)
         {
             const userInput = readName();
-            const element = lookUp(userInput, elementByNumber, elementBySymbol, elementByName);
-            displayElement(element);
-
+            try 
+            {
+                const element = lookUp(userInput, elementByNumber, elementBySymbol, elementByName);
+                displayElement(element);
+            }
+            catch(error)
+            {
+                console.log(error.message);
+            }
+    
             const userContinue = continueLookUp();
             if (userContinue === 'no' || userContinue === 'n')
             {
@@ -94,18 +101,30 @@ function lookUp(userInput, elementByNumber, elementBySymbol, elementByName)
     //Normalise input
     const normalisedInput = userInput.toString().trim();
     let elementResult = null;
+    let inputType = "";
     //If input is a number, get number, if input length is between 1 and 2, get symbol else get name
     if (isNumber(normalisedInput))
     {
         elementResult = elementByNumber.get(normalisedInput);
+        inputType = "atomic number";
     }
     else if (normalisedInput.length <= 2)
     {
         elementResult = elementBySymbol.get(normalisedInput);
+        inputType = "element symbol";
     }
     else
     {
         elementResult = elementByName.get(normalisedInput);
+        inputType = "element name";
+    }
+
+    if (!elementResult)
+    {
+        throw new Error
+        (
+            `Element with ${inputType} ${userInput} does not exist!`
+        );
     }
 
     return elementResult;
@@ -113,22 +132,15 @@ function lookUp(userInput, elementByNumber, elementBySymbol, elementByName)
 
 function displayElement(elem)
 {
-    if (!elem)
-    {
-        console.log("No element found!");
-    }
-    else
-    {
-        console.log("Element Found!");
-        console.log(`Element Atomic Number: ${elem.AtomicNumber}`);
-        console.log(`Element Symbol: ${elem.Symbol}`);
-        console.log(`Element Name: ${elem.Name}`);
-        console.log(`Element Atomic Mass: ${elem.AtomicMass} u`);
-        console.log(`Element Standard State: ${elem.StandardState}`);
-        console.log(`Element Boiling Point: ${elem.BoilingPoint ? elem.BoilingPoint + " K" : "N/A"}`);
-        console.log(`Element Melting Point: ${elem.MeltingPoint ? elem.MeltingPoint + " K": "N/A"}`);
-        console.log(`Element Density: ${elem.Density ? elem.Density + " g/cm^3" : "N/A"}`);
-        console.log(`Element Group: ${elem.GroupBlock}`);
-        console.log(`Element Discovery Year: ${elem.YearDiscovered}`);
-    }
+    console.log("Element Found!");
+    console.log(`Element Atomic Number: ${elem.AtomicNumber}`);
+    console.log(`Element Symbol: ${elem.Symbol}`);
+    console.log(`Element Name: ${elem.Name}`);
+    console.log(`Element Atomic Mass: ${elem.AtomicMass} u`);
+    console.log(`Element Standard State: ${elem.StandardState}`);
+    console.log(`Element Boiling Point: ${elem.BoilingPoint ? elem.BoilingPoint + " K" : "N/A"}`);
+    console.log(`Element Melting Point: ${elem.MeltingPoint ? elem.MeltingPoint + " K": "N/A"}`);
+    console.log(`Element Density: ${elem.Density ? elem.Density + " g/cm^3" : "N/A"}`);
+    console.log(`Element Group: ${elem.GroupBlock}`);
+    console.log(`Element Discovery Year: ${elem.YearDiscovered}`);
 }
