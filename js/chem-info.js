@@ -93,7 +93,7 @@ function lookUp(userInput, elementByNumber, elementBySymbol, elementByName)
 {
     //Normalise input
     const normalisedInput = userInput.toString().trim();
-    let elementResult;
+    let elementResult = null;
     //If input is a number, get number, if input length is between 1 and 2, get symbol else get name
     if (isNumber(normalisedInput))
     {
