@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <title>Element Information Sheet</title>
         <script defer src="./js/chem-html-form.js"></script>
+        <script defer src="./js/html-dom.js"></script>
     </head>
 
     <body>
@@ -18,14 +19,15 @@
                     <input id="element-input" name="element-input" type="text" required>
                     <span  id = "element-input-error" class="error-message"></span>
                 </div>
-
-                <div class="element-display">
-
-                </div>
-
+                
                 <input type="submit" value="Submit" />
                 <input type="reset" value="Reset" />
             </form>
         </section>
+
+        <div id = "element-display" class = "results">
+
+
+        </div>
     </body>
 </html>
