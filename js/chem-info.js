@@ -1,48 +1,39 @@
 // This is primarily a csv parser to test on console
-const fs = require("fs");
-const csv = require("csv-parser");
-const results = [];
+const results = require("../json/elements.json");
 
-fs.createReadStream("../src/PubChemElements_all.csv")
-    .pipe(csv())
-    .on("data", (data) => results.push(data))
-    .on("end", () => {
+const elementByNumber = new Map();
+results.forEach (element => elementByNumber.set(element.AtomicNumber, element));
 
-        const elementByNumber = new Map();
-        results.forEach (element => elementByNumber.set(element.AtomicNumber, element));
+const elementBySymbol = new Map();
+const elementByName = new Map();
 
-        const elementBySymbol = new Map();
-        const elementByName = new Map();
+for (const element of elementByNumber.values())
+{
+    elementBySymbol.set(element.Symbol.toLowerCase(), element);
+    elementByName.set(element.Name.toLowerCase(), element);
+}
+console.log(`Loaded ${results.length} Elements!`)
+let continuePrompt = true;
 
-        for (const element of elementByNumber.values())
-        {
-            elementBySymbol.set(element.Symbol.toLowerCase(), element);
-            elementByName.set(element.Name.toLowerCase(), element);
-        }
-        console.log(`Loaded ${results.length} Elements!`)
-        let continuePrompt = true;
+while (continuePrompt)
+{
+    const userInput = readName();
+    try
+    {
+        const element = lookUp(userInput, elementByNumber, elementBySymbol, elementByName);
+        displayElement(element);
+    }
+    catch(error)
+    {
+        console.log(error.message);
+    }
 
-        while (continuePrompt)
-        {
-            const userInput = readName();
-            try 
-            {
-                const element = lookUp(userInput, elementByNumber, elementBySymbol, elementByName);
-                displayElement(element);
-            }
-            catch(error)
-            {
-                console.log(error.message);
-            }
-    
-            const userContinue = continueLookUp();
-            if (userContinue === 'no' || userContinue === 'n')
-            {
-                continuePrompt = false;
-            }
-        }
-
-    });
+    const userContinue = continueLookUp();
+    if (userContinue === 'no' || userContinue === 'n')
+    {
+        continuePrompt = false;
+    }
+}
 
 function isNumber(value) 
 {
