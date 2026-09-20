@@ -1,0 +1,22 @@
+{
+  "name": "chemistry-information-sheet",
+  "version": "1.0.0",
+  "description": "- This is a personal project of mine, I have always been interested in Chemistry, I want to use my programming skill to build a system to look up information about elements and calculating the molecular weight of a compound.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baomdoan/Chemistry-Information-Sheet.git"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/baomdoan/Chemistry-Information-Sheet/issues"
+  },
+  "homepage": "https://github.com/baomdoan/Chemistry-Information-Sheet#readme",
+  "devDependencies": {
+    "vitest": "^5.0.1"
+  }
+}
