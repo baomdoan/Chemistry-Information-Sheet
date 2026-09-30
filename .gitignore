@@ -1,2 +1,4 @@
 *.txt
 .vitest/
+node_modules/
+.env
