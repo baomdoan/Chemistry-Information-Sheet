@@ -4,7 +4,7 @@ const elementInputError = document.getElementById('element-input-error');
 
 const numberOnly = /^\d+$/;
 
-async function getData() {
+export async function getData() {
     try {
         const response = await fetch("../json/elements.json");
         if (!response.ok) 

@@ -19,8 +19,8 @@ export async function getElementData()
     elementData.forEach (element => 
     {
         elementByNumber.set(element.AtomicNumber, element);
-        elementBySymbol.set(element.Symbol.toLowerCase(), element);
-        elementByName.set(element.Name.toLowerCase(), element);
+        elementBySymbol.set(element.Symbol, element);
+        elementByName.set(element.Name, element);
     });
 
     return {elementByNumber, elementBySymbol, elementByName};
