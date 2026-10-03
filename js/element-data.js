@@ -1,9 +1,16 @@
-async export function getElementData()
-{
-    const response = await fetch("../json/element-data.json");
-    if (!response.ok) throw new Error (`HTTP ${response.status}!`);
+const fs = require('node:fs/promises');
 
-    const elementData = await response.json();
+export async function getElementData()
+{
+    let elementData;
+    try {
+        const response = await fs.readFile("./json/elements.json", {encoding: 'utf-8'});
+        elementData = JSON.parse(response);
+        console.log(elementData);
+    }catch (err)
+    {
+        console.error(err);
+    }
 
     const elementByNumber = new Map();
     const elementBySymbol = new Map();
@@ -40,3 +47,5 @@ function filterElement(userInput, elData)
     const elName = elData.elementByName.get(input);
     if (elName) return [elName];
 }
+
+getElementData();
