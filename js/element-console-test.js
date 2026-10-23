@@ -1,0 +1,88 @@
+//import { getElementData } from "./element-data.js";
+//import { filterElement } from "./element-data.js";
+
+const utils = require("./element-data");
+
+async function main() {
+  const elementData = await utils.getElementData();
+  console.log(
+    `Successfully loaded ${elementData.elementByName.size} elements!`,
+  );
+
+  let continuePrompt = true;
+
+  while (continuePrompt) {
+    const userInput = readName();
+    try {
+      const element = utils.filterElement(userInput, elementData);
+      displayElement(element);
+    } catch (error) {
+      console.log(error.message);
+    }
+
+    const userContinue = continueLookUp();
+    if (userContinue === "no" || userContinue === "n") {
+      continuePrompt = false;
+    }
+  }
+}
+
+function continueLookUp() {
+  const prompt = require("prompt-sync")({ sigint: true });
+
+  let userContinue = prompt("Do you want to look up another element? ");
+  let validInput = userContinue.trim().toLowerCase();
+
+  while (
+    validInput !== "yes" &&
+    validInput !== "no" &&
+    validInput !== "y" &&
+    validInput !== "n"
+  ) {
+    userContinue = prompt("Please enter (Y)es or (N)o! ");
+    validInput = userContinue.trim().toLowerCase();
+  }
+
+  return validInput;
+}
+
+function readName() {
+  const prompt = require("prompt-sync")({ sigint: true });
+
+  let elementInput = prompt(
+    "Please enter the name/symbol/atomic number of an element: ",
+  );
+  let hasWhiteSpace = elementInput.trim(); //check for empty or white space
+
+  while (hasWhiteSpace.length === 0) {
+    elementInput = prompt(
+      "Please enter the name/symbol/atomic number of an element: ",
+    );
+
+    hasWhiteSpace = elementInput.trim();
+  }
+
+  return elementInput;
+}
+
+function displayElement(elem) {
+  console.log("Element Found!");
+  console.log(`Element Atomic Number: ${elem.AtomicNumber}`);
+  console.log(`Element Symbol: ${elem.Symbol}`);
+  console.log(`Element Name: ${elem.Name}`);
+  console.log(`Element Atomic Mass: ${elem.AtomicMass} u`);
+  console.log(`Element Standard State: ${elem.StandardState}`);
+  console.log(
+    `Element Boiling Point: ${elem.BoilingPoint ? elem.BoilingPoint + " K" : "N/A"}`,
+  );
+  console.log(
+    `Element Melting Point: ${elem.MeltingPoint ? elem.MeltingPoint + " K" : "N/A"}`,
+  );
+  console.log(
+    `Element Density: ${elem.Density ? elem.Density + " g/cm^3" : "N/A"}`,
+  );
+  console.log(`Element Group: ${elem.GroupBlock}`);
+  console.log(`Element Discovery Year: ${elem.YearDiscovered}`);
+}
+
+main();

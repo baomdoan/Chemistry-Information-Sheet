@@ -1,51 +1,52 @@
-const fs = require('node:fs/promises');
+const fs = require("node:fs/promises");
+const path = require("path");
 
-export async function getElementData()
-{
-    let elementData;
-    try {
-        const response = await fs.readFile("./json/elements.json", {encoding: 'utf-8'});
-        elementData = JSON.parse(response);
-        console.log(elementData);
-    }catch (err)
-    {
-        console.error(err);
-    }
-
-    const elementByNumber = new Map();
-    const elementBySymbol = new Map();
-    const elementByName = new Map();
-
-    elementData.forEach (element => 
-    {
-        elementByNumber.set(element.AtomicNumber, element);
-        elementBySymbol.set(element.Symbol, element);
-        elementByName.set(element.Name, element);
+async function getElementData() {
+  let elementData;
+  const dataPath = path.join(__dirname, "../json/elements.json");
+  try {
+    const response = await fs.readFile(dataPath, {
+      encoding: "utf-8",
     });
+    elementData = JSON.parse(response);
+    //console.log(typeof elementData.AtomicNumber);
+  } catch (err) {
+    console.error(err);
+  }
 
-    return {elementByNumber, elementBySymbol, elementByName};
+  const elementByNumber = new Map();
+  const elementBySymbol = new Map();
+  const elementByName = new Map();
+
+  elementData.forEach((element) => {
+    element.AtomicNumber = Number(element.AtomicNumber);
+    elementByNumber.set(element.AtomicNumber, element);
+    elementBySymbol.set(element.Symbol.toLowerCase(), element);
+    elementByName.set(element.Name.toLowerCase(), element);
+  });
+
+  return { elementByNumber, elementBySymbol, elementByName };
 }
 
-function filterElement(userInput, elData)
-{
-    const input = userInput.trim().toLowerCase();
-    if (!input) return null;
+function filterElement(userInput, elData) {
+  const input = String(userInput).trim().toLowerCase();
 
-    const num = Number(input);
-    if (!isNaN(num))
-    {
-        const el = elData.elementByNumber.get(num);
-        return el ? [el] : null;
-    }
+  if (!input) throw new Error("Element not found");
 
-    if (input.length <= 2)
-    {
-        const el = elData.elementBySymbol.get(input);
-        return el ? [el] : null;
-    }
+  let element;
 
-    const elName = elData.elementByName.get(input);
-    if (elName) return [elName];
+  const num = Number(input);
+  if (!isNaN(num)) {
+    element = elData.elementByNumber.get(num);
+  } else if (input.length <= 2) {
+    element = elData.elementBySymbol.get(input);
+  } else {
+    element = elData.elementByName.get(input);
+  }
+
+  if (!element) throw new Error("Element not found");
+
+  return element;
 }
 
-getElementData();
+module.exports = { getElementData, filterElement };
