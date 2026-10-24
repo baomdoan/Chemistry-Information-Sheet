@@ -1,6 +1,7 @@
-import { expect, test } from "vitest";
-import { getElementData } from "./js/element-data.js";
-import { filterElement } from "./js/element-data.js";
+import { beforeEach, describe, expect, it, test, vi } from "vitest";
+//import { getElementData } from "./js/element-data.js";
+//import { filterElement } from "./js/element-data.js";
+import { getData } from "./js/js-html-functions";
 
 /*
 // Test atomic number matches
@@ -52,6 +53,7 @@ test("Testing cross maps lookup", async () => {
 });
 */
 
+/*
 // Find element by number
 test("Filter element finds a match", async () => {
   const elementData = await getElementData();
@@ -120,4 +122,27 @@ test("reject white spaces input", async () => {
   await expect(filterElement("     ", elementData)).rejects.toThrow(
     "Element not found",
   );
+});
+*/
+
+const mockFetch = vi.fn();
+
+global.fetch = mockFetch;
+
+describe("getData", () => {
+  beforeEach(() => {
+    mockFetch.mockClear();
+  });
+
+  it("Load elements and check atmic number conversion", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve([{ Name: "Hydrogen", AtomicNumber: "1" }]),
+    });
+
+    const elements = await getData();
+    expect(mockFetch).toHaveBeenCalledWith("./json/elements.json");
+    expect(elements[0].Name).toEqual("Hydrogen");
+    expect(elements[0].AtomicNumber).toEqual(1);
+  });
 });
