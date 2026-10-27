@@ -1,52 +1,49 @@
-const fs = require("node:fs/promises");
-const path = require("path");
+const dataPath = "./json/elements.json";
 
-async function getElementData() {
-  let elementData;
-  const dataPath = path.join(__dirname, "../json/elements.json");
+export async function getData() {
   try {
-    const response = await fs.readFile(dataPath, {
-      encoding: "utf-8",
+    const response = await fetch(dataPath);
+    if (!response.ok) throw new Error(`HTTP Error Status: ${response.status}`);
+
+    // Parse JSON content to be done next
+    const elementData = await response.json();
+
+    const elementByNumber = new Map();
+    const elementBySymbol = new Map();
+    const elementByName = new Map();
+
+    elementData.forEach((element) => {
+      element.AtomicNumber = Number(element.AtomicNumber);
+      elementByNumber.set(element.AtomicNumber, element);
+      elementBySymbol.set(element.Symbol.toLowerCase(), element);
+      elementByName.set(element.Name.toLowerCase(), element);
     });
-    elementData = JSON.parse(response);
-    //console.log(typeof elementData.AtomicNumber);
+
+    return { elementByNumber, elementBySymbol, elementByName };
   } catch (err) {
-    console.error(err);
+    document.getElementById("element-display").textContent =
+      `Unable to load JSON data, Error ${err.message}`;
+    return null;
   }
-
-  const elementByNumber = new Map();
-  const elementBySymbol = new Map();
-  const elementByName = new Map();
-
-  elementData.forEach((element) => {
-    element.AtomicNumber = Number(element.AtomicNumber);
-    elementByNumber.set(element.AtomicNumber, element);
-    elementBySymbol.set(element.Symbol.toLowerCase(), element);
-    elementByName.set(element.Name.toLowerCase(), element);
-  });
-
-  return { elementByNumber, elementBySymbol, elementByName };
 }
 
-function filterElement(userInput, elData) {
-  const input = String(userInput).trim().toLowerCase();
+// function filterElement(userInput, elData) {
+//   const input = String(userInput).trim().toLowerCase();
 
-  if (!input) throw new Error("Element not found");
+//   if (!input) throw new Error("Element not found");
 
-  let element;
+//   let element;
 
-  const num = Number(input);
-  if (!isNaN(num)) {
-    element = elData.elementByNumber.get(num);
-  } else if (input.length <= 2) {
-    element = elData.elementBySymbol.get(input);
-  } else {
-    element = elData.elementByName.get(input);
-  }
+//   const num = Number(input);
+//   if (!isNaN(num)) {
+//     element = elData.elementByNumber.get(num);
+//   } else if (input.length <= 2) {
+//     element = elData.elementBySymbol.get(input);
+//   } else {
+//     element = elData.elementByName.get(input);
+//   }
 
-  if (!element) throw new Error("Element not found");
+//   if (!element) throw new Error("Element not found");
 
-  return element;
-}
-
-module.exports = { getElementData, filterElement };
+//   return element;
+// }
