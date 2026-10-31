@@ -2,30 +2,87 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Element Information Sheet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./css/styles.css" />
     <script type="module" defer src="./js/chem-html-form.js"></script>
   </head>
 
-  <body>
-    <div class="main">
-      <h1>Element Information Search</h1>
-    </div>
+  <body class="min-h-screen bg-slate-950 text-slate-100 antialiased">
+    <main
+      class="mx-auto flex min-h-screen w-full max-w-4xl flex-col justify-center px-5 py-12 sm:px-8"
+    >
+      <header class="mb-8">
+        <p
+          class="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-cyan-300"
+        >
+          Chemistry reference
+        </p>
+        <h1 class="text-4xl font-bold tracking-tight text-white sm:text-5xl">
+          Element Information Search
+        </h1>
+        <p class="mt-4 max-w-2xl leading-7 text-slate-300">
+          Look up an element by its name, chemical symbol, or atomic number.
+        </p>
+      </header>
 
-    <section class="element-form">
-      <form id="element-form" method="post" action="https://httpbin.org/post">
-        <div class="element-input">
-          <label class="elem-choice"
-            >Enter a symbol/name/atomic number of an element:</label
-          ><br />
-          <input id="element-input" name="element-input" type="text" required />
-          <span id="element-input-error" class="error-message"></span>
-        </div>
+      <section
+        class="rounded-2xl border border-slate-700 bg-slate-900/80 p-6 shadow-2xl shadow-cyan-950/30 sm:p-8"
+        aria-label="Search for a chemical element"
+      >
+        <form
+          id="element-form"
+          class="space-y-5"
+          method="post"
+          action="https://httpbin.org/post"
+        >
+          <div>
+            <label
+              class="mb-2 block text-sm font-medium text-slate-200"
+              for="element-input"
+            >
+              Element name, symbol, or atomic number
+            </label>
+            <input
+              id="element-input"
+              class="w-full rounded-lg border border-slate-600 bg-slate-950 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/30"
+              name="element-input"
+              type="text"
+              placeholder="For example: oxygen, O, or 8"
+              aria-describedby="element-input-error"
+              required
+            />
+            <span
+              id="element-input-error"
+              class="mt-2 block min-h-5 text-sm text-rose-300"
+              role="alert"
+            ></span>
+          </div>
 
-        <input type="submit" value="Submit" />
-        <input type="reset" value="Reset" />
-      </form>
-    </section>
+          <div class="flex flex-col gap-3 sm:flex-row">
+            <button
+              class="rounded-lg bg-cyan-400 px-5 py-3 font-semibold text-slate-950 transition hover:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-cyan-200 focus:ring-offset-2 focus:ring-offset-slate-900"
+              type="submit"
+            >
+              Search element
+            </button>
+            <button
+              class="rounded-lg border border-slate-600 px-5 py-3 font-semibold text-slate-200 transition hover:border-slate-400 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+              type="reset"
+            >
+              Clear
+            </button>
+          </div>
+        </form>
+      </section>
 
-    <div id="element-display" class="results"></div>
+      <section
+        id="element-display"
+        class="results mt-6 rounded-2xl border border-slate-700 bg-slate-900/80 p-6 sm:p-8"
+        aria-live="polite"
+        aria-label="Element information"
+      ></section>
+    </main>
   </body>
 </html>
